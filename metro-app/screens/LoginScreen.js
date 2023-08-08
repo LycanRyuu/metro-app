@@ -1,32 +1,30 @@
 import React, { useContext, useState } from "react";
-import {
-	View,
-	Text,
-	TextInput,
-	Button,
-	StyleSheet,
-	TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import AppContext from "../shared/AppContext";
+// import { useHistory } from "react-router-native";
 import { useTheme } from "@react-navigation/native";
 import CustomButton from "../components/CustomButton";
 import CustomLink from "../components/CustomLink";
+import spacing from "../styles/constants/spacing";
+import CustomInput from "../components/CustomInput";
+// import DateTimePicker from "@react-native-community/datetimepicker";
 
 const LoginScreen = () => {
-	const { colors, font } = useTheme();
-	const appContext = useContext(AppContext);
+	const { font } = useTheme();
+	// const appContext = useContext(AppContext);
 
 	const styles = StyleSheet.create({
 		container: {
 			flex: 1,
 			justifyContent: "space-between",
-			backgroundColor: "grey",
+			backgroundColor: "#101015",
 		},
 		contentContainer: {
 			backgroundColor: "white",
-			padding: 30,
 			borderTopRightRadius: 20,
 			borderTopLeftRadius: 20,
+			padding: spacing.APP_MARGIN,
+			paddingBottom: 35,
 		},
 		title: { fontFamily: font.bold, fontSize: 24, marginBottom: 20 },
 		input: {
@@ -38,13 +36,26 @@ const LoginScreen = () => {
 			marginBottom: 10,
 			paddingHorizontal: 10,
 		},
+		topLine: {
+			// width: "20%",
+			width: 48,
+			height: 4,
+			backgroundColor: "#9B9B9B6A",
+			alignSelf: "center",
+			marginTop: 10,
+			marginBottom: 16,
+			borderRadius: 2,
+		},
 	});
 
 	return (
 		<View style={styles.container}>
-			<View></View>
+			<View style={{ flex: 1 }}></View>
 			<View style={styles.contentContainer}>
-				<BottomContent />
+				<View style={styles.topLine}></View>
+				<View style={{ gap: 16 }}>
+					<BottomContent />
+				</View>
 			</View>
 		</View>
 	);
@@ -54,14 +65,13 @@ export default LoginScreen;
 
 function BottomContent() {
 	const { colors, font } = useTheme();
+	// const history = useHistory();
 
 	const [currentStep, setCurrentStep] = useState(0);
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
+	const [fullName, setFullName] = useState("");
 
 	const handleLogin = () => {
-		console.log("Username:", username);
-		console.log("Password:", password);
+		console.log("Full Name:", fullName);
 		setCurrentStep(2);
 	};
 
@@ -80,7 +90,7 @@ function BottomContent() {
 		},
 		dontHaveAccount: {
 			flexDirection: "row",
-			alignItems: "center",
+			// alignItems: "center",
 			justifyContent: "center",
 		},
 		signupLink: { color: "#F25A53" },
@@ -89,7 +99,7 @@ function BottomContent() {
 	switch (currentStep) {
 		case 0:
 			return (
-				<View style={{ gap: 10 }}>
+				<>
 					<CustomButton
 						title='Log in'
 						onPress={() => setCurrentStep(1)}
@@ -100,58 +110,85 @@ function BottomContent() {
 						onPress={() => setCurrentStep(1)}
 						color='secondary'
 					/>
-				</View>
+				</>
 			);
 		case 1:
 			return (
 				<>
-					<Text style={styles.title}>Login</Text>
-					<TextInput
-						style={styles.input}
-						placeholder='Username'
-						value={username}
-						onChangeText={(text) => setUsername(text)}
+					<CustomInput
+						label='Full Name'
+						placeholder='Full Name'
+						value={fullName}
+						onChangeText={(text) => setFullName(text)}
 					/>
-					<TextInput
-						style={styles.input}
-						placeholder='Password'
-						value={password}
-						onChangeText={(text) => setPassword(text)}
-						secureTextEntry
+					<CustomInput
+						label='Email'
+						placeholder='Enter Email'
+						value={fullName}
+						onChangeText={(text) => setFullName(text)}
+					/>
+					<View
+						style={{
+							flexDirection: "row",
+							// justifyContent: "space-between",
+						}}
+					>
+						<CustomInput
+							label='Phone'
+							placeholder='Phone'
+							style={{ flex: 1, marginRight: 8 }}
+						/>
+						<CustomInput
+							label='Date of Birth'
+							placeholder='DD/MM/YY'
+							style={{ flex: 1, marginRight: 8 }}
+						/>
+					</View>
+					{/* <DatePicker /> */}
+					<CustomInput
+						label='Occupation'
+						placeholder='Graphic Designer'
 					/>
 					<CustomButton
 						title='Sign up'
 						onPress={handleLogin}
 						color='primary'
 					/>
-					<Text style={styles.dontHaveAccount}>
-						Already have an account? <CustomLink text='Log in' />
-					</Text>
+					<View style={styles.dontHaveAccount}>
+						<Text>Already have an account?</Text>
+						<CustomLink text='Log in' />
+					</View>
 				</>
 			);
 		case 2:
 			return (
-				<View>
-					<Text style={styles.labelText}>Phone / Email</Text>
-					<TextInput style={styles.input} />
+				<>
+					<CustomInput
+						label='Phone / Email'
+						placeholder='Phone / Email'
+					/>
 					<CustomButton
 						title='Send OTP'
 						color='primary'
 						onPress={() => setCurrentStep(3)}
 					/>
-					<Text style={styles.dontHaveAccount}>
-						Don't have an account? <CustomLink text='Sign up' />
-					</Text>
-				</View>
+					<View style={styles.dontHaveAccount}>
+						<Text>Don't have an account?</Text>
+						<CustomLink text='Sign up' />
+					</View>
+				</>
 			);
 		case 3:
 			return (
-				<View>
-					<Text style={styles.labelText}>OTP</Text>
-					<TextInput style={styles.input} />
-					<CustomButton title='Confirm' color='primary' />
+				<>
+					<CustomInput label='OTP' placeholder='OTP' />
+					<CustomButton
+						title='Confirm'
+						color='primary'
+						link='/home'
+					/>
 					<CustomLink text='Resend OTP' />
-				</View>
+				</>
 			);
 		default:
 			return null;

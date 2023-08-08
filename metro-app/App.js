@@ -1,11 +1,12 @@
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
+import { NativeRouter, Routes, Route } from "react-router-native";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import AppContext from "./shared/AppContext";
 import LoginScreen from "./screens/LoginScreen";
+import HomeScreen from "./screens/HomeScreen";
 
 export default function App() {
 	const [isReady, setIsReady] = useState(false);
@@ -24,10 +25,7 @@ export default function App() {
 		toggleAccentColor: (color) => setAccentColor(color),
 	};
 
-	const fontName = "Montserrat";
-	// const fontName = "OpenSans";
-	// const fontName = "RobotoCondensed";
-	// const fontName = "RobotoFlex";
+	const fontName = "Poppins";
 
 	const AppTheme = {
 		...DefaultTheme,
@@ -46,6 +44,8 @@ export default function App() {
 		},
 		font: {
 			regular: `${fontName}-Regular`,
+			medium: `${fontName}-Medium`,
+			semiBold: `${fontName}-SemiBold`,
 			bold: `${fontName}-Bold`,
 		},
 	};
@@ -54,13 +54,10 @@ export default function App() {
 		const loadFonts = async () => {
 			try {
 				await Font.loadAsync({
-					"Montserrat-Regular": require("./assets/fonts/Montserrat-Regular.ttf"),
-					"Montserrat-Bold": require("./assets/fonts/Montserrat-Bold.ttf"),
-					"OpenSans-Regular": require("./assets/fonts/OpenSans-Regular.ttf"),
-					"OpenSans-Bold": require("./assets/fonts/OpenSans-Bold.ttf"),
-					"RobotoCondensed-Regular": require("./assets/fonts/RobotoCondensed-Regular.ttf"),
-					"RobotoCondensed-Bold": require("./assets/fonts/RobotoCondensed-Bold.ttf"),
-					"RobotoFlex-Regular": require("./assets/fonts/RobotoFlex-Regular.ttf"),
+					"Poppins-Regular": require("./assets/fonts/Poppins-Regular.ttf"),
+					"Poppins-Medium": require("./assets/fonts/Poppins-Medium.ttf"),
+					"Poppins-SemiBold": require("./assets/fonts/Poppins-SemiBold.ttf"),
+					"Poppins-Bold": require("./assets/fonts/Poppins-Bold.ttf"),
 				});
 			} catch (e) {
 				console.warn(e);
@@ -78,11 +75,18 @@ export default function App() {
 	}
 
 	return (
-		<AppContext.Provider value={userSettings}>
-			<NavigationContainer theme={AppTheme}>
-				<StatusBar style={AppTheme.dark === true ? "light" : "dark"} />
-				<LoginScreen />
-			</NavigationContainer>
-		</AppContext.Provider>
+		<NativeRouter>
+			<AppContext.Provider value={userSettings}>
+				<NavigationContainer theme={AppTheme}>
+					<StatusBar
+						style={AppTheme.dark === true ? "light" : "dark"}
+					/>
+					<Routes>
+						<Route path='/' element={<LoginScreen />} />
+						<Route path='/home' element={<HomeScreen />} />
+					</Routes>
+				</NavigationContainer>
+			</AppContext.Provider>
+		</NativeRouter>
 	);
 }
